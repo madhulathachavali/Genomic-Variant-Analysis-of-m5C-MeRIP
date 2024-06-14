@@ -1,45 +1,78 @@
-# NGS Data Analysis
+# NGS Data Analysis Pipeline
 
-# Step 1: Quality Control (FastQC)
-# Run FastQC to check the quality of the raw sequencing reads
+# Section 1: Install Necessary Tools
 
-# Step 2: Install Bowtie2
+# Install FastQC for quality control
+sudo apt-get install fastqc
+
+# Install Bowtie2 for alignment
 sudo apt-get install bowtie2
 
-# Step 3: Download and Unzip Reference Genome
-cd ~/Downloads
+# Install Samtools for working with SAM/BAM files
+brew install samtools
+
+# Install SRA Toolkit for downloading data from NCBI SRA
+sudo apt-get install sra-toolkit
+
+# Install Trimmomatic for trimming reads
+sudo apt-get install trimmomatic
+
+# Section 2: Quality Control (FastQC)
+
+# Run FastQC to check the quality of the raw sequencing reads (example command, customize paths as needed)
+fastqc /path/to/raw_reads.fastq -o /path/to/output_directory
+
+# Section 3: Download and Prepare Reference Genome
+
+# Download and unzip the reference genome
+cd /Users/madhuchavali/Downloads
 wget ftp://ftp.ensembl.org/pub/release-104/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 
-# Step 4: Index the Reference Genome
+# Index the reference genome
 bowtie2-build Homo_sapiens.GRCh38.dna.primary_assembly.fa Homo_sapiens_GRCh38_index
 
 # Check if indexed
-ls ~/Downloads/Homo_sapiens_GRCh38_index.*
+ls /Users/madhuchavali/Downloads/Homo_sapiens_GRCh38_index.*
 
-# Step 5: Align Sequencing Reads
-bowtie2 -x ~/Downloads/Homo_sapiens_GRCh38_index -U /path/to/trimmed_reads.fastq -S ~/Downloads/aligned_reads.sam
+# Section 4: Download SRA Data
 
-# List the Bowtie2 index files
-ls Homo_sapiens_GRCh38_index.*
+# Download SRA run file (SRR2405099)
+prefetch SRR2405099
+
+# Convert SRA to FASTQ
+fastq-dump --split-files SRR2405099
+
+# Section 5: Trim Reads
+
+# Run Trimmomatic to trim reads (example command, customize paths and parameters as needed)
+trimmomatic SE -phred33 /Users/madhuchavali/Downloads/SRR2405099_1.fastq /Users/madhuchavali/Downloads/trimmed_reads.fastq ILLUMINACLIP:/path/to/adapters/TruSeq3-SE.fa:2:30:10 SLIDINGWINDOW:4:20 MINLEN:50
+
+# Section 6: Align Sequencing Reads
+
+# Align reads to the reference genome
+bowtie2 -x /Users/madhuchavali/Downloads/Homo_sapiens_GRCh38_index -U /Users/madhuchavali/Downloads/trimmed_reads.fastq -S /Users/madhuchavali/Downloads/aligned_reads.sam
 
 # Check the size of the SAM file
-ls -lh ~/Downloads/aligned_reads.sam
+ls -lh /Users/madhuchavali/Downloads/aligned_reads.sam
 
-# Step 6: Install Samtools (if not already installed)
-brew install samtools
+# Section 7: Convert, Sort, and Index BAM
 
-# Step 7: Convert SAM to BAM
-samtools view -S -b ~/Downloads/aligned_reads.sam > ~/Downloads/aligned_reads.bam
+# Convert SAM to BAM
+samtools view -S -b /Users/madhuchavali/Downloads/aligned_reads.sam > /Users/madhuchavali/Downloads/aligned_reads.bam
 
-# Step 8: Sort BAM File
-samtools sort ~/Downloads/aligned_reads.bam -o ~/Downloads/aligned_reads_sorted.bam
+# Sort BAM file
+samtools sort /Users/madhuchavali/Downloads/aligned_reads.bam -o /Users/madhuchavali/Downloads/aligned_reads_sorted.bam
 
-# Step 9: Index the Sorted BAM File
-samtools index ~/Downloads/aligned_reads_sorted.bam
+# Index the sorted BAM file
+samtools index /Users/madhuchavali/Downloads/aligned_reads_sorted.bam
 
-# Step 10: Variant Calling (if WGS/WES data)
-gatk HaplotypeCaller -R ~/Downloads/Homo_sapiens.GRCh38.dna.primary_assembly.fa -I ~/Downloads/aligned_reads_sorted.bam -O ~/Downloads/variants.vcf
+# Section 8: Variant Calling (if WGS/WES data)
 
-# Step 11: Variant Annotation
-table_annovar.pl ~/Downloads/variants.vcf humandb/ -buildver hg38 -out ~/Downloads/annotated_variants -remove -protocol refGene,cytoBand,dbnsfp30a -operation g,r,f -nastring . -vcfinput
+# Run GATK HaplotypeCaller for variant calling
+gatk HaplotypeCaller -R /Users/madhuchavali/Downloads/Homo_sapiens.GRCh38.dna.primary_assembly.fa -I /Users/madhuchavali/Downloads/aligned_reads_sorted.bam -O /Users/madhuchavali/Downloads/variants.vcf
+
+# Section 9: Variant Annotation
+
+# Annotate variants using ANNOVAR
+table_annovar.pl /Users/madhuchavali/Downloads/variants.vcf humandb/ -buildver hg38 -out /Users/madhuchavali/Downloads/annotated_variants -remove -protocol refGene,cytoBand,dbnsfp30a -operation g,r,f -nastring . -vcfinput
