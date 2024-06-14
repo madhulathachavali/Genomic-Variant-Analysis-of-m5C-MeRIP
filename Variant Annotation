@@ -30,8 +30,50 @@ Dropped Variants (ExAC)
 Path: /Users/madhuchavali/Downloads/results/annotated.hg38_exac03_dropped
 Description: This file contains variants that match the filtering criteria specified by the ExAC database.
 
+# Download and Extract ANNOVAR:
+#1.  Download ANNOVAR
+curl -O http://www.openbioinformatics.org/annovar/download/0wgxR2rIVP/annovar.latest.tar.gz
 
+# Extract the ANNOVAR package
+tar -zxvf annovar.latest.tar.gz
 
+# Move the extracted ANNOVAR directory to /usr/local
+sudo mv annovar /usr/local/
+#2. Update the PATH Environment Variable:
+# Open the .zshrc file in a text editor
+nano ~/.zshrc
+
+# Add the following line to the file
+export PATH=$PATH:/usr/local/annovar
+
+# Save and exit the editor (CTRL+X, then Y, then ENTER)
+
+# Source the updated .zshrc file to apply the changes
+source ~/.zshrc
+#3. Download Required Databases for ANNOVAR:
+# Change to the ANNOVAR directory
+cd /usr/local/annovar
+
+# Download the refGene database
+perl annotate_variation.pl -downdb -webfrom annovar -buildver hg38 refGene humandb/
+
+# Download the exact database
+perl annotate_variation.pl -downdb -webfrom annovar -buildver hg38 exac03 humandb/
+
+#4. Annotate Variants Using ANNOVAR:
+# Create a directory for the results
+mkdir -p /Users/madhuchavali/Downloads/results/
+
+# Annotate the variants using ANNOVAR
+perl table_annovar.pl /Users/madhuchavali/Downloads/variants.vcf /usr/local/annovar/humandb/ -buildver hg38 -out /Users/madhuchavali/Downloads/results/annotated -remove -protocol refGene,exac03 -operation g,f -nastring . -vcfinput
+# output files 
+
+1./Users/madhuchavali/Downloads/results/annotated.hg38_multianno.txt
+2./Users/madhuchavali/Downloads/results/annotated.hg38_multianno.vcf
+3./Users/madhuchavali/Downloads/results/annotated.refGene.variant_function
+4./Users/madhuchavali/Downloads/results/annotated.refGene.exonic_variant_function
+5./Users/madhuchavali/Downloads/results/annotated.hg38_exac03_filtered
+6./Users/madhuchavali/Downloads/results/annotated.hg38_exac03_dropped
 
 
 
