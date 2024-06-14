@@ -75,6 +75,69 @@ perl table_annovar.pl /Users/madhuchavali/Downloads/variants.vcf /usr/local/anno
 5./Users/madhuchavali/Downloads/results/annotated.hg38_exac03_filtered
 6./Users/madhuchavali/Downloads/results/annotated.hg38_exac03_dropped
 
+# Filtered variants: resutls in downloads
+## cd results
+ls
+## view contents of filtered files
+
+head annotated.hg38_multianno.txt
+head annotated.hg38_multianno.vcf
+
+### Variant Annotation Results
+
+## Annotated Variants (VCF Format)
+
+The following is a sample of the annotated variants in VCF format obtained after running ANNOVAR and filtering the variants:
+
+```plaintext
+##fileformat=VCFv4.2
+##FILTER=<ID=LowQual,Description="Low quality">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
+##GATKCommandLine=<ID=HaplotypeCaller,CommandLine="HaplotypeCaller --output /Users/madhuchavali/Downloads/variants.vcf --input /Users/madhuchavali/Downloads/aligned_reads_sorted_rg.bam --reference /Users/madhuchavali/Downloads/Homo_sapiens.GRCh38.dna.primary_assembly.fa --use-posteriors-to-calculate-qual false --dont-use-dragstr-priors false --use-new-qual-calculator true --annotate-with-num-discovered-alleles false --heterozygosity 0.001 --indel-heterozygosity 1.25E-4 --heterozygosity-stdev 0.01 --standard-min-confidence-threshold-for-calling 30.0 --max-alternate-alleles 6 --max-genotype-count 1024 --sample-ploidy 2 --num-reference-samples-if-no-call 0 --genotype-assignment-method USE_PLS_TO_ASSIGN --contamination-fraction-to-filter 0.0 --output-mode EMIT_VARIANTS_ONLY --all-site-pls false --flow-likelihood-parallel-threads 0 --flow-likelihood-optimized-comp false --flow-use-t0-tag false --flow-probability-threshold 0.003 --flow-remove-non-single-base-pair-indels false --flow-remove-one-zero-probs fal
+
+# Variant Annotation Results
+
+## Annotated Variants (VCF Format)
+
+This file contains genetic variants identified in our sample after annotation and filtering.
+
+### VCF Header Explanation
+
+- **File Format**: VCF version 4.2
+- **Filters**:
+  - **LowQual**: Low quality variants.
+- **Format Fields**:
+  - **AD**: Allelic depths (number of reads for each allele).
+  - **DP**: Depth of coverage (number of reads covering the variant).
+  - **GQ**: Genotype quality (confidence in the genotype call).
+  - **GT**: Genotype (e.g., 0/1 for heterozygous).
+  - **PL**: Phred-scaled likelihoods of genotypes.
+- **Command Line**: Command used to call variants with GATK HaplotypeCaller.
+- **INFO Fields**:
+  - **AC**: Allele count for each alternate allele.
+  - **AF**: Allele frequency for each alternate allele.
+
+### Sample Output (First Few Lines)
+
+```plaintext
+##fileformat=VCFv4.2
+##FILTER=<ID=LowQual,Description="Low quality">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
+##GATKCommandLine=<ID=HaplotypeCaller,CommandLine="HaplotypeCaller ... --version 4.3.0.0",Date="June 14, 2024, 2:06:03 PM PDT">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes, for each ALT allele, in the same order as listed">
+##INFO=<ID=AF,Number=A,Type=Float,Description="Allele Frequency, for each ALT allele, in the same order as listed">
+
+
+
+
 
 
 
