@@ -1,1 +1,20 @@
-### Step 1: Variant Annotation
+# Step 1: Variant Annotation
+# install annovar 
+cd ~/Downloads
+# Extract the downloaded package:
+tar -zxvf annovar.latest.tar.gz
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Reference: Wang K, Li M, Hakonarson H. ANNOVAR: Functional annotation of genetic variants from next-generation sequencing data, Nucleic Acids Research, 38:e164, 2010
