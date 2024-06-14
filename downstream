@@ -29,43 +29,55 @@ Output: Figures and plots for publication or presentation.
 Example Workflow
 Here’s a step-by-step outline incorporating the above points:
 
-Step 1: Variant Annotation
-bash
-Copy code
+# Step 1: Variant Annotation
 # ANNOVAR example command
 perl annotate_variation.pl -out results/annotated -build hg38 input.vcf humandb/
-Step 2: Variant Filtering and Prioritization
-bash
-Copy code
+
+# Step 2: Variant Filtering and Prioritization
 # Filter variants with bcftools
-bcftools filter -i 'QUAL>20 && INFO/DP>10' annotated.vcf > filtered.vcf
-Step 3: Functional Impact Prediction
-bash
-Copy code
+bcftools filter -i 'QUAL>20 && INFO/DP>10' results/annotated.vcf > results/filtered.vcf
+
+# Step 3: Functional Impact Prediction
 # Run CADD on filtered variants
-cadd.sh -g GRCh38 -v filtered.vcf > cadd_output.tsv
-Step 4: Pathway and Gene Set Analysis
-R
-Copy code
+cadd.sh -g GRCh38 -v results/filtered.vcf > results/cadd_output.tsv
+
+# Step 4: Pathway and Gene Set Analysis
 # Example GSEA analysis in R
+Rscript -e "
 library(clusterProfiler)
-gene_list <- read.csv("gene_list.csv")
-gsea_result <- gseGO(geneList = gene_list, OrgDb = org.Hs.eg.db, keyType = "ENSEMBL", ont = "BP")
-Step 5: Comparative Analysis
-Use dbSNP or gnomAD for population frequency comparison.
-Step 6: Literature Review and Database Search
-Use PubMed for literature search.
-Use ClinVar and OMIM for clinical significance search.
-Step 7: Visualization and Reporting
-python
-Copy code
+gene_list <- read.csv('results/gene_list.csv')
+gsea_result <- gseGO(geneList = gene_list, OrgDb = org.Hs.eg.db, keyType = 'ENSEMBL', ont = 'BP')
+write.csv(gsea_result, 'results/gsea_result.csv')
+"
+
+# Step 5: Comparative Analysis
+# Use dbSNP or gnomAD for population frequency comparison (manual step)
+
+# Step 6: Literature Review and Database Search
+# Use PubMed for literature search (manual step)
+# Use ClinVar and OMIM for clinical significance search (manual step)
+
+# Step 7: Visualization and Reporting
 # Python example for plotting variant impact
+python3 -c "
 import matplotlib.pyplot as plt
 import pandas as pd
 
-data = pd.read_csv('cadd_output.tsv', sep='\t')
+data = pd.read_csv('results/cadd_output.tsv', sep='\t')
 plt.hist(data['CADD_score'], bins=50)
 plt.xlabel('CADD Score')
 plt.ylabel('Number of Variants')
 plt.title('Distribution of CADD Scores')
-plt.show()
+plt.savefig('results/cadd_score_distribution.png')
+"
+
+# Summary of Analysis Steps
+echo '
+1. Variant Annotation: Annotated VCF file with functional impact predictions.
+2. Variant Filtering and Prioritization: Filtered list of high-confidence variants.
+3. Functional Impact Prediction: List of variants with functional impact scores.
+4. Pathway and Gene Set Analysis: List of significant pathways and gene sets.
+5. Comparative Analysis: Insights into the frequency and significance of your variants in different populations and contexts.
+6. Literature Review and Database Search: List of variants with known clinical or biological significance.
+7. Visualization and Reporting: Figures and plots for publication or presentation.
+'
