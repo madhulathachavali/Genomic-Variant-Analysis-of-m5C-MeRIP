@@ -1,32 +1,45 @@
-### NGS data analysis 
+# NGS Data Analysis
 
-1. Quality Control (FastQC):
+# Step 1: Quality Control (FastQC)
+# Run FastQC to check the quality of the raw sequencing reads (not included in this script).
 
-2. Install Bowtie2:
+# Step 2: Install Bowtie2
 sudo apt-get install bowtie2
 
-# Step 3: Download and unzip reference genome
+# Step 3: Download and Unzip Reference Genome
 cd ~/Downloads
 wget ftp://ftp.ensembl.org/pub/release-104/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 gunzip Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 
-# Step 4: Index the reference genome
+# Step 4: Index the Reference Genome
 bowtie2-build Homo_sapiens.GRCh38.dna.primary_assembly.fa Homo_sapiens_GRCh38_index
 
-# Step 5: Align sequencing reads
+# Check if indexed
+ls ~/Downloads/Homo_sapiens_GRCh38_index.*
+
+# Step 5: Align Sequencing Reads
 bowtie2 -x ~/Downloads/Homo_sapiens_GRCh38_index -U /path/to/trimmed_reads.fastq -S ~/Downloads/aligned_reads.sam
 
-# Step 6: Convert SAM to BAM
+# List the Bowtie2 index files
+ls Homo_sapiens_GRCh38_index.*
+
+# Check the size of the SAM file
+ls -lh ~/Downloads/aligned_reads.sam
+
+# Step 6: Install Samtools (if not already installed)
+brew install samtools
+
+# Step 7: Convert SAM to BAM
 samtools view -S -b ~/Downloads/aligned_reads.sam > ~/Downloads/aligned_reads.bam
 
-# Step 7: Sort and index BAM
+# Step 8: Sort BAM File
 samtools sort ~/Downloads/aligned_reads.bam -o ~/Downloads/aligned_reads_sorted.bam
+
+# Step 9: Index the Sorted BAM File
 samtools index ~/Downloads/aligned_reads_sorted.bam
 
-# Step 8: Variant calling (if WGS/WES data)
+# Step 10: Variant Calling (if WGS/WES data)
 gatk HaplotypeCaller -R ~/Downloads/Homo_sapiens.GRCh38.dna.primary_assembly.fa -I ~/Downloads/aligned_reads_sorted.bam -O ~/Downloads/variants.vcf
 
-# Step 9: Variant annotation
+# Step 11: Variant Annotation
 table_annovar.pl ~/Downloads/variants.vcf humandb/ -buildver hg38 -out ~/Downloads/annotated_variants -remove -protocol refGene,cytoBand,dbnsfp30a -operation g,r,f -nastring . -vcfinput
-
-Data Source: https://basespace.illumina.com/analyses/28178451/files?projectId=14068054
