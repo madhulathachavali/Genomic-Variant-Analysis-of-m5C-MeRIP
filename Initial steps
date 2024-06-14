@@ -1,7 +1,7 @@
 # NGS Data Analysis
 
 # Step 1: Quality Control (FastQC)
-# Run FastQC to check the quality of the raw sequencing reads (not included in this script).
+# Run FastQC to check the quality of the raw sequencing reads
 
 # Step 2: Install Bowtie2
 sudo apt-get install bowtie2
