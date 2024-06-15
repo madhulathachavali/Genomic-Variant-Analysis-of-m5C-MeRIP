@@ -137,9 +137,102 @@ This file contains genetic variants identified in our sample after annotation an
 
 
 
+# Next Steps in Variant Analysis
+Filter Variants:
 
+Applying additional filters to narrow down your variants of interest. filter based on variant quality, allele frequency, or functional impact.
+# install VCF tools
+brew install vcftools
 
+#2. Filter Variants by Quality
+vcftools --vcf annotated.hg38_multianno.vcf --minQ 30 --recode --out filtered_variants
 
+# Functional Annotation
+Annotated high-quality variants with SnpEff to predict their impact on genes and proteins.
+
+# VCF Analysis in Kaggle Notebook
+
+## Step 1: Install Required Libraries
+
+```python
+!pip install pandas vcfpy
+import pandas as pd
+import vcfpy
+
+# Load VCF file
+vcf_reader = vcfpy.Reader.from_path('/kaggle/input/filtered-varients/annotated.hg38_multianno.vcf')
+
+# Initialize lists to store data
+chrom = []
+pos = []
+ids = []
+ref = []
+alt = []
+qual = []
+filter_status = []
+info = []
+
+# Extract data from VCF file
+for record in vcf_reader:
+    chrom.append(record.CHROM)
+    pos.append(record.POS)
+    ids.append(record.ID)
+    ref.append(record.REF)
+    alt.append(','.join(str(a) for a in record.ALT))
+    qual.append(record.QUAL)
+    filter_status.append(record.FILTER)
+    info.append(record.INFO)
+
+# Create a DataFrame
+df = pd.DataFrame({
+    'CHROM': chrom,
+    'POS': pos,
+    'ID': ids,
+    'REF': ref,
+    'ALT': alt,
+    'QUAL': qual,
+    'FILTER': filter_status,
+    'INFO': info
+})
+
+# Display the DataFrame
+df.head()
+# Filter variants with a minimum quality score of 30
+high_quality_variants = df[df['QUAL'] >= 30]
+
+# Display the filtered DataFrame
+high_quality_variants.head()
+# Function to extract AF from INFO field
+def get_af(info):
+    if 'AF' in info:
+        return info['AF'][0]
+    return None
+
+# Apply function to get allele frequencies
+high_quality_variants['AF'] = high_quality_variants['INFO'].apply(get_af)
+
+# Describe the allele frequencies
+af_values = high_quality_variants['AF'].dropna()
+af_values.describe()
+high_quality_variants.to_csv('filtered_variants.csv', index=False)
+
+## Function to extract AF from INFO field
+def get_af(info):
+    if 'AF' in info:
+        return info['AF'][0]
+    return None
+
+# Apply function to get allele frequencies
+high_quality_variants['AF'] = high_quality_variants['INFO'].apply(get_af)
+
+# Filter variants with AF around 0.5 (between 0.45 and 0.55)
+variants_af_around_0_5 = high_quality_variants[(high_quality_variants['AF'] >= 0.45) & (high_quality_variants['AF'] <= 0.55)]
+
+# Display the filtered DataFrame
+variants_af_around_0_5.head()
+
+# Describe the filtered DataFrame to get summary statistics
+variants_af_around_0_5.describe()
 
 
 
