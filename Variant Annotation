@@ -1,3 +1,5 @@
+## Data source: SRX24250599 The data source is from the Sequence Read Archive (SRA) under the accession SRX24250599, submitted by Guangdong Provincial People's Hospital. It involves m5C MeRIP sequencing of PANC-1 cells treated with CAF-derived Evs, sequenced using an Illumina NovaSeq 6000.
+
 # Step 1: Variant Annotation
 # install annovar 
 cd ~/Downloads
