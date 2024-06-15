@@ -1,0 +1,57 @@
+## Steps in the Analysis
+# Download the Raw Data:
+
+# Download the raw sequencing data from NCBI SRA using the fastq-dump tool from SRA Toolkit.
+
+bash
+Copy code
+fastq-dump --split-files SRR28682527
+
+# Quality Control:
+
+# Perform quality control on the downloaded FASTQ files using FastQC and MultiQC.
+eg commands:
+bash
+Copy code
+fastqc SRR28682527_1.fastq SRR28682527_2.fastq
+multiqc .
+# Trimming Adapters and Low-Quality Reads:
+
+Use fastp or similar tools to trim adapters and low-quality bases.
+Example command:
+bash
+Copy code
+fastp -i SRR28682527_1.fastq -I SRR28682527_2.fastq -o trimmed_reads_1.fastq -O trimmed_reads_2.fastq
+Mapping to Reference Genome:
+
+#Align the trimmed reads to the reference genome (e.g., GRCh38) using Bowtie2 or BWA.
+#Example command using Bowtie2:
+bash
+Copy code
+bowtie2 -x GRCh38_index -1 trimmed_reads_1.fastq -2 trimmed_reads_2.fastq -S aligned_reads.sam
+Convert SAM to BAM:
+
+#Convert the SAM file to a BAM file using Samtools.
+#Example command:
+bash
+Copy code
+samtools view -S -b aligned_reads.sam > aligned_reads.bam
+Sort and Index BAM File:
+
+#Sort the BAM file and create an index.
+#Example commands:
+bash
+Copy code
+samtools sort aligned_reads.bam -o aligned_reads_sorted.bam
+samtools index aligned_reads_sorted.bam
+Variant Calling:
+
+#Call variants using tools like GATK or FreeBayes.
+#Example command with GATK:
+bash
+Copy code
+gatk HaplotypeCaller -R GRCh38.fa -I aligned_reads_sorted.bam -O variants.vcf
+
+#Annotation of Variants:
+
+Annotate the variants using tools like ANNOVAR or VEP.
