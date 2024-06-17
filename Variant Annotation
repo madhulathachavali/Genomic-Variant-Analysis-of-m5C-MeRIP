@@ -237,6 +237,10 @@ variants_af_around_0_5.head()
 variants_af_around_0_5.describe()
 
 
+## Steps for Analysis Using Annotated Data
+Review Annotations: Open the annotated.hg38_multianno.txt file to review the types of annotations that ANNOVAR has provided. This file will include information such as gene symbol, effect on the protein (e.g., non-synonymous SNP), functional predictions, and possibly links to disease databases.
+
+Identify Key Variants: Focus on variants of interest, such as non-synonymous SNPs, frameshift mutations, or variants within regulatory regions, based on your research question. You can use the filtered_variants_annotated.vcf for a more refined dataset.
 
 
 
