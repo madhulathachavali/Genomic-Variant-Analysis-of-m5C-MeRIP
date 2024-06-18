@@ -1,0 +1,16 @@
+# Download and extract the file 
+# Step 1: Download the PolyPhen-2 tarball from the website
+http://genetics.bwh.harvard.edu/wiki/!pph2/downloads#software
+ftp://genetics.bwh.harvard.edu/pph2/bundled/polyphen-2.2.3-databases-2021_05.tar.bz2
+
+# Step 2: Create a directory for PolyPhen-2
+mkdir -p /Users/madhuchavali/polyphen2
+
+# Step 3: Extract the PolyPhen-2 tarball to the specified directory
+tar -xzvf polyphen-2.2.3r408.tar.gz -C /Users/madhuchavali/polyphen2
+
+# Navigate to the PolyPhen-2 directory
+cd /Users/madhuchavali/polyphen2/polyphen-2.2.3
+
+# List the contents of the directory
+ls -l
