@@ -14,3 +14,10 @@ cd /Users/madhuchavali/polyphen2/polyphen-2.2.3
 
 # List the contents of the directory
 ls -l
+
+#  INSTALL
+cat INSTALL
+
+
+
+
