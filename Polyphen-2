@@ -18,6 +18,14 @@ ls -l
 #  INSTALL
 cat INSTALL
 
+# Step 5: Install CPAN Minus
+brew install cpanminus
+
+# Step 6: Install required Perl modules
+cpanm Math::Interpolate
+cpanm Term::ProgressBar
+cpanm PPH
+
 
 
 
